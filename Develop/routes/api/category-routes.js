@@ -1,28 +1,41 @@
-const router = require('express').Router();
-const { Category, Product } = require('../../models');
+const { Model, DataTypes } = require('sequelize');
 
-// The `/api/categories` endpoint
+const sequelize = require('../config/connection.js');
 
-router.get('/', (req, res) => {
-  // find all categories
-  // be sure to include its associated Products
-});
+class Category extends Model { }
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
-});
+Category.init(
+  {
+    // define columns
+    id: {
+      // Integer
+      type: DataTypes.INTEGER,
+      // Doesn't allow null values.
+      allowNull: false,
+      // Set as primary key.
+      primaryKey: true,
+      // Uses auto increment.
+      autoIncrement: true
+    },
+   category_name: {
+      type: DataTypes.STRING,
+      // Doesn't allow null values.
+      allowNull: false,
+      // Set as primary key.
+    }
 
-router.post('/', (req, res) => {
-  // create a new category
-});
+  },
+  {
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'category',
+  }
+);
 
-router.put('/:id', (req, res) => {
-  // update a category by its `id` value
-});
+module.exports = Category;
 
-router.delete('/:id', (req, res) => {
-  // delete a category by its `id` value
-});
+// Product belongs to Category, and Category has many Product models, as a category can have multiple products but a product can only belong to one category.
 
-module.exports = router;
+// Product belongs to many Tag models, and Tag belongs to many Product models. Allow products to have multiple tags and tags to have many products by using the ProductTag through model.
