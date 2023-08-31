@@ -1,41 +1,66 @@
-const { Model, DataTypes } = require('sequelize');
+const router = require("express").Router();
+const { Category, Product } = require("../../models");
 
-const sequelize = require('../config/connection.js');
 
-class Category extends Model { }
+// Find all categories
+router.get("/", (req, res) => {
+    Category.findAll({
+    include: [Product], 
+  })
+    .then((categories) => {
+      res.json(categories); 
+    })
+    .catch((err) => {
+      res.status(500).json(err); 
+    });
+});
 
-Category.init(
-  {
-    // define columns
-    id: {
-      // Integer
-      type: DataTypes.INTEGER,
-      // Doesn't allow null values.
-      allowNull: false,
-      // Set as primary key.
-      primaryKey: true,
-      // Uses auto increment.
-      autoIncrement: true
-    },
-   category_name: {
-      type: DataTypes.STRING,
-      // Doesn't allow null values.
-      allowNull: false,
-      // Set as primary key.
-    }
+router.get("/:id", (req, res) => {
+  // Find one category by its `id` value
+  Category.findByPk(req.params.id, {
+    include: [Product], // Include associated Products
+  })
+    .then((category) => {
+      if (!category) {
+        res.status(404).json({ message: "No category found with this id" }); // Send a 404 response if category is not found
+        return;
+      }
+      res.json(category); // Send the category as a JSON response
+    })
+    .catch((err) => {
+      res.status(500).json(err); // Send an error response if there is an error
+    });
+});
 
-  },
-  {
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'category',
-  }
-);
+router.post("/", (req, res) => {
+  // Create a new category
+  Category.create(req.body)
+    .then((category) => {
+      res.json(category); // Send the newly created category as a JSON response
+    })
+    .catch((err) => {
+      res.status(500).json(err); // Send an error response if there is an error
+    });
+});
 
-module.exports = Category;
+router.put("/:id", (req, res) => {
+  Category.update(req.body, { where: { id: req.params.id } })
+    .then((category) => {
+      res.json(category);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
 
-// Product belongs to Category, and Category has many Product models, as a category can have multiple products but a product can only belong to one category.
+router.delete("/:id", (req, res) => {
+  Category.destroy({ where: { id: req.params.id } })
+    .then((category) => {
+      res.json(category);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
 
-// Product belongs to many Tag models, and Tag belongs to many Product models. Allow products to have multiple tags and tags to have many products by using the ProductTag through model.
+module.exports = router;
