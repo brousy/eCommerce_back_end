@@ -1,6 +1,7 @@
-# E-commerce Back End Starter Code
+# E-commerce Back End Application
 
 ## Description
+This is a back end for an e-commerce site created by modifying starter code. You’ll configure a working Express.js API to use Sequelize to interact with a MySQL database.
 
 ## USER STORY
 ```md
@@ -32,6 +33,8 @@ THEN I am able to successfully create, update, and delete data in my database
  source db/schema.sql
  show databases; (to check if datbase has be successfully created)
  use ecommerce_db; (to change into this database)
+
+## Contributions
 
 
 ## License
