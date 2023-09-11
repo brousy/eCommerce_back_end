@@ -1,32 +1,15 @@
-// import models
-const Product = require("./Product");
-const Category = require("./Category");
-const Tag = require("./Tag");
-const ProductTag = require("./ProductTag");
+const router = require('express').Router();
+const categoryRoutes = require('./category-routes.js');
+const productRoutes = require('./product-routes');
+const tagRoutes = require('./tag-routes');
 
-// inner joins
-Product.belongsTo(Category, {
-  foreignKey: "category_id",
-  onDelete: "cascade",
+router.use('/categories', categoryRoutes);
+router.use('/products', productRoutes);
+router.use('/tags', tagRoutes);
+
+
+router.use((req, res) => {
+  res.send("<h1>Wrong Route!</h1>")
 });
 
-Category.hasMany(Product, {
-foreignKey: "category_id"
-});
-
-// tag find a product through product tag table product_id
-Product.belongsToMany(Tag,{
-  through: ProductTag,
-  foreignKey: "product_id"
-})
-
-Tag.belongsToMany(Product,{
-  through: ProductTag,
-  foreignKey: "tag_id"
-})
-module.exports = {
-  Product,
-  Category,
-  Tag,
-  ProductTag,
-};
+module.exports = router;
